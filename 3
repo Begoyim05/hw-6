@@ -1,0 +1,117 @@
+#include <iostream>
+#include <string>
+using namespace std
+
+class RuntimeException {
+    string msg;
+public:
+    RuntimeException(const string& m) : msg(m) {}
+    string getMessage() const { return msg; }
+};
+
+class StackEmpty : public RuntimeException {
+public:
+    StackEmpty(const string& m) : RuntimeException(m) {}
+};
+
+class StackFull : public RuntimeException {
+public:
+    StackFull(const string& m) : RuntimeException(m) {}
+};
+
+
+class ArrayStack {
+private:
+    int* arr;
+    int cap;
+    int n;
+
+public:
+    ArrayStack(int capacity) {
+        cap = capacity;
+        arr = new int[cap];
+        n = 0;
+    }
+
+    ~ArrayStack() {
+        delete[] arr;
+    }
+
+    int size() const { return n; }
+    bool empty() const { return n == 0; }
+
+    void push(int x) {
+        if (n == cap) {
+            StackFull e("Stack is full");
+            cout << e.getMessage() << endl;
+            return;
+        }
+        arr[n++] = x;
+    }
+
+    void pop() {
+        if (empty()) {
+            StackEmpty e("Stack is empty");
+            cout << e.getMessage() << endl;
+            return;
+        }
+        n--;
+    }
+
+    void top() const {
+        if (empty()) {
+            StackEmpty e("Stack is empty");
+            cout << e.getMessage() << endl;
+            return;
+        }
+        cout << arr[n - 1] << endl;
+    }
+
+    void print() const {
+        if (empty()) {
+            cout << "Empty" << endl;
+            return;
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            cout << arr[i];
+            if (i > 0) cout << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    int cap, q;
+    cin >> cap ;
+
+    ArrayStack st(cap);
+
+    for (int i = 0; i < 100; i++) {
+        string cmd;
+        cin >> cmd;
+
+        if (cmd == "push") {
+            int x; cin >> x;
+            st.push(x);
+        }
+        else if (cmd == "pop") {
+            st.pop();
+        }
+        else if (cmd == "top") {
+            st.top();
+        }
+        else if (cmd == "size") {
+            cout << st.size() << endl;
+        }
+        else if (cmd == "empty") {
+            cout << (st.empty() ? 1 : 0) << endl;
+        }
+        else if (cmd == "print") {
+            st.print();
+        }
+        else if (cmd == "break"){
+            break;
+        }
+    }
+    return 0;
+}
